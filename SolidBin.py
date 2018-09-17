@@ -34,12 +34,22 @@ logger.addHandler(console_hdr)
 
 
 
-def gen_knn_affinity_graph(X, top=500):
+'''def gen_knn_affinity_graph_large_scale(X, top=500):
     A = kneighbors_graph(X, n_neighbors=min(top, X.shape[0] - 1), mode='distance', p=1,
                          n_jobs=-1)
     nzIdx = np.nonzero(A)
     bandwidth = np.percentile(A[nzIdx[0], nzIdx[1]], 5)
     A[nzIdx[0], nzIdx[1]] = np.exp(-A[nzIdx[0], nzIdx[1]] / bandwidth)
+    return A'''
+
+def gen_knn_affinity_graph(X, top=np.Inf):
+    A = kneighbors_graph(X, n_neighbors=min(top, X.shape[0] - 1), mode='distance', p=1,
+                         n_jobs=-1)
+    min_ = A.min();
+    max_ = A.max();
+    A=A.toarray()
+    A = 1 - (A - min_)/(max_-min_)
+    A =coo_matrix(A)
     return A
 
 
