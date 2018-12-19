@@ -20,6 +20,12 @@ import os
 import argparse
 import sys
 
+
+import matlab
+import matlab.engine
+import scipy.io
+import hdf5storage
+
 logger = logging.getLogger('SolidBin')
 
 logger.setLevel(logging.INFO)
@@ -333,11 +339,35 @@ def ssncut_full_search(A, k, ml_mat, cl_mat, a_list, b_list,X=None):
     return best_a, best_b,result
 
 
-def ssncut(Simi_Matrix, K_Clust, ML, CL, alpha, beta):
-    xx = mapping_all(Simi_Matrix, K_Clust, ML, CL, alpha, beta)
-    kmeans = KMeans(n_clusters=K_Clust, init='k-means++')
-    kmeans.fit(xx.T)
-    return kmeans.labels_, xx
+def ssncut(A, k, mLMat, cLMat, alpha, beta):
+    if hasattr(mLMat, 'toarray'):
+        mLMat=mLMat.toarray()
+    if hasattr(cLMat, 'toarray'):
+        cLMat=cLMat.toarray()
+    if hasattr(A, 'toarray'):
+        A=A.toarray()
+    mLMat=np.array(mLMat)
+    cLMat=np.array(cLMat)
+    eng=matlab.engine.start_matlab()
+    file_prefix=time.strftime('%Y%m%d%H%M%S',time.localtime(time.time()))
+
+    #Synchronize python/matlab working directory
+    eng.cd(os.getcwd(),nargout=0)
+    eng.addpath('matlab')
+
+    #scipy.io.savemat(file_prefix+'_temp.mat', {'A':A, 'k':k,'mLMat':mLMat,'cLMat':cLMat,'alpha':alpha,'beta':beta})
+    hdf5storage.write({u'A':A, u'k':k,u'mLMat':mLMat,u'cLMat':cLMat,u'alpha':alpha,u'beta':beta},'.',file_prefix+'_temp.mat',matlab_compatible=True)
+    eng.load(file_prefix+'_temp.mat',nargout=0)
+    eng.eval('[labels,xx] =SSNCut(A,k,mLMat,cLMat,alpha,beta);',nargout=0)
+    eng.save(file_prefix+'_temp.mat','labels','xx', nargout=0)
+    eng.quit()
+
+    data=scipy.io.loadmat(file_prefix+'_temp.mat')
+
+    #clean
+    if os.path.exists(file_prefix+'_temp.mat'):
+        os.remove(file_prefix+'_temp.mat')
+    return data['labels'],data['xx']
 
 def save_result(result,filepath,namelist):
     filedir,filename=os.path.split(filepath)

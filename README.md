@@ -14,7 +14,7 @@ Create a Anaconda environment and activate it:
 
 ```sh
 conda create -n solidbin python=3.6
-source activate cocacola_env
+source activate solidbin
 ```
 
 Install the SolidBin dependencies into this environment:
@@ -89,7 +89,22 @@ We recommend using the way CONCOCT adopts, you can find it [here](https://concoc
                   
     --use_sfs:
               Use sequence feature similarity to generate must-link constraints.
-                        
+
+
+## <a name="preprocessing"></a>MATLAB VERSION
+We also provide MATLAB version code for the reproduction of the results in our paper "SolidBin: Improving Metagenome Binning with Semi-supervised Normalized Cut".
+
+We have wrapped our MATLAB code in Python and you can use it in the same way as Python (Please copy "auxiliary" into "matlab_ver" before you use MATLAB-ver SolidBin).
+
+NOTICE: We only test this wrapper on MATLAB R2017a and we can not guarantee the stabibility on other versions of MATLAB.
+
+
+
+## <a name="preprocessing"></a>References
+
+[1] Lu, Yang Young, et al. "COCACOLA: binning metagenomic contigs using sequence COmposition, read CoverAge, CO-alignment and paired-end read LinkAge." Bioinformatics 33.6 (2017): 791-798.
+
+[2] Alneberg, Johannes, et al. "Binning metagenomic contigs by coverage and composition." Nature methods 11.11 (2014): 1144.             
 
 
 
