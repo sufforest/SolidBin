@@ -34,7 +34,7 @@ We recommend using the way CONCOCT adopts, you can find it [here](https://concoc
 ## <a name="usage"></a>Usage
 
 
-> - Uage:          [--contig_file CONTIG_FILE]
+> - Usage:         [--contig_file CONTIG_FILE]
                    [--coverage_profiles COVERAGE_PROFILES]
                    [--composition_profiles COMPOSITION_PROFILES]
                    [--priori_ml_list ML_LIST] 
