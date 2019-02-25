@@ -29,7 +29,7 @@ The preprocessing steps aim to generate coverage profile and composition profile
 
 There are several methods that can generate these two types of information.
 
-We recommend using the way CONCOCT adopts, you can find it [here](https://concoct.readthedocs.io/en/latest/complete_example.html).
+We recommend using the way CONCOCT adopts, you can find it [here](https://github.com/BinPro/CONCOCT/).
 
 ## <a name="usage"></a>Usage
 
