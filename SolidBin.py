@@ -5,11 +5,12 @@
 
 from sklearn.neighbors import kneighbors_graph
 import pandas as pd
-from scipy.sparse import csc_matrix
+from scipy.sparse import csc_matrix,coo_matrix
 import time
 import numpy as np
 
 from scipy.special import perm
+
 from scipy.sparse import linalg
 from sklearn.cluster import KMeans
 from sklearn import metrics
