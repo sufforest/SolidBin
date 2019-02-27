@@ -56,12 +56,12 @@ def gen_knn_affinity_graph(X, top=np.Inf):
 
 def gen_X(com_file, cov_file):
     covHeader = pd.read_csv(cov_file, sep='\t', nrows=1)
-    covMat = pd.read_csv(cov_file, sep='\t', usecols=range(1, covHeader.shape[1])).as_matrix()
+    covMat = pd.read_csv(cov_file, sep='\t', usecols=range(1, covHeader.shape[1])).values
     namelist = pd.read_csv(cov_file, sep='\t', usecols=range(1)).values[:, 0]
     mapObj = dict(zip(namelist, range(len(namelist))))
 
     compositHeader = pd.read_csv(com_file, sep=',', nrows=1)
-    shuffled_compositMat = pd.read_csv(com_file, sep=',', usecols=range(1, compositHeader.shape[1])).as_matrix()
+    shuffled_compositMat = pd.read_csv(com_file, sep=',', usecols=range(1, compositHeader.shape[1])).values
     shuffled_namelist = pd.read_csv(com_file, sep=',', usecols=range(1)).values[:, 0]
 
     covIdxArr = []
@@ -105,7 +105,7 @@ def mapping_all(S, k, ML, CL, alpha, beta):
         sys.exit(0)
 
     DW = sp.linalg.spsolve(Dsqrt, W)
-    LT = sp.linalg.spsolve(Dsqrt.T, DW.T)
+    LT = sp.linalg.spsolve(csc_matrix(Dsqrt.T), csc_matrix(DW.T))
     L = (LT.T + LT) / 2
     d, v = linalg.eigs(L, k, which='LR')
     uu, dummy = np.real(v).T, np.real(d)
