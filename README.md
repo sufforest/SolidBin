@@ -20,7 +20,7 @@ source activate solidbin
 Install the SolidBin dependencies into this environment:
 
 ```sh
-conda install numpy pandas scikit-learn scipy
+$ conda install numpy pandas scikit-learn scipy
 ```
 
 ## <a name="preprocessing"></a>Preprocessing
@@ -29,7 +29,59 @@ The preprocessing steps aim to generate coverage profile and composition profile
 
 There are several methods that can generate these two types of information.
 
-We recommend using the way CONCOCT adopts, you can find it [here](https://github.com/BinPro/CONCOCT/).
+We recommend using the way CONCOCT adopts, you can find it [here](https://github.com/BinPro/CONCOCT/). 
+
+For the reproducibility, we provide a complete example to show how each profile is generated:
+
+### Dependency
+
+Fisrt of all, we download [CONCOCT v4.0](https://github.com/BinPro/CONCOCT/archive/0.4.0.zip) and set environmental variables for deoendency software.
+
+```sh
+$ CONCOCT=/path/to/your/CONCOCT
+$ MRKDUP=/path/to/your/picard-tools-1.77/MarkDuplicates.jar
+
+```
+
+We use Bowtie2 to map the reads of each sample back to the assembly.
+And then we use MarkDuplicates to remove PCR duplicates, use BEDTools to compute the coverage histogram for each bam file.
+
+After we install all dependecies and set environmental variables correctly, we can generate coverage profile and composition profile for the given dataset(Make sure that directories of dependency are both in the PATH environmental variable).
+
+Take dataset *StrainMock* as an example(We do not provide the ).
+
+
+### Composition Profile
+
+Composition profile is the vector representation of contigs and we use kmer(k=4) to generate this information.
+
+```
+$ python $CONCOCT/scripts/fasta_to_features.py /path/to/data/StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta 9417 4 /path/to/input/composition.csv
+```
+9417 is the number of contigs in this data and 4 is the k we choose.
+
+### Coverage Profile
+For the coverage profile, we first create the index on the assembly for bowtie2.
+
+```
+$ bowtie2-build StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta
+```
+Then we map the reads of each sample (Here we choose *Sample1006*).
+
+```
+$CONCOCT/scripts/map-bowtie2-markduplicates.sh -ct 10 -p '-f' /path/to/samples/Sample1006_1.fasta /path/to/samples/Sample1006/Sample1006_2.fasta pair /path/to/data/StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta Sample1006 /path/to/samples/Sample1006/
+```
+
+Finally, we can generate coverage profile from the bam files for each sample.
+
+```
+python $CONCOCT/scripts/gen_input_table.py \
+/path/to/data/StrainMock_Contigs_cutup_10K_nodup_filter_1K.fast \
+/path/to/samples/Sample1006/Sample1006_pair-smds.bam /path/to/other/sample/bamfile... \
+> /path/to/input/coverage.tsv
+```
+
+
 
 ## <a name="usage"></a>Usage
 
