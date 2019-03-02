@@ -8,6 +8,7 @@ import pandas as pd
 from scipy.sparse import csc_matrix,coo_matrix
 import time
 import numpy as np
+import scipy
 
 from scipy.special import perm
 
@@ -107,7 +108,9 @@ def mapping_all(S, k, ML, CL, alpha, beta):
     DW = sp.linalg.spsolve(Dsqrt, W)
     LT = sp.linalg.spsolve(csc_matrix(Dsqrt.T), csc_matrix(DW.T))
     L = (LT.T + LT) / 2
-    d, v = linalg.eigs(L, k, which='LR')
+    #d, v = linalg.eigs(L, k, which='LR')
+    numL=L.shape[0] #
+    d, v =scipy.linalg.eigh(L.toarray(),eigvals=(numL-k,numL-1))#
     uu, dummy = np.real(v).T, np.real(d)
     return uu.astype(np.float)
 
@@ -390,7 +393,7 @@ if __name__ == '__main__':
     # search range for alpha and beta
     alpha_list = [1.0, 5.0, 10.0, 20.0, 30.0, 40.0] if not args.a else [args.a]
     sfs_alpha_list=[0]+alpha_list
-    beta_list  = [0.0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 0.8, 1.0] if not args.b else [args.b]
+    beta_list  = [0.02, 0.05, 0.1, 0.2, 0.5] if not args.b else [args.b]
 
 
     sfs_mat=None
