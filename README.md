@@ -48,7 +48,7 @@ And then we use MarkDuplicates to remove PCR duplicates, use BEDTools to compute
 
 After we install all dependecies and set environmental variables correctly, we can generate coverage profile and composition profile for the given dataset(Make sure that directories of dependency are both in the PATH environmental variable).
 
-Take dataset *StrainMock* as an example(We do not provide the ).
+Take dataset *StrainMock* as an example.
 
 
 ### Composition Profile
