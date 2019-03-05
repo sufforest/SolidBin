@@ -393,7 +393,7 @@ if __name__ == '__main__':
     # search range for alpha and beta
     alpha_list = [1.0, 5.0, 10.0, 20.0, 30.0, 40.0] if not args.a else [args.a]
     sfs_alpha_list=[0]+alpha_list
-    beta_list  = [0.02, 0.05, 0.1, 0.2, 0.5] if not args.b else [args.b]
+    beta_list  = [0.02, 0.05, 0.1, 0.2] if not args.b else [args.b]
 
 
     sfs_mat=None
