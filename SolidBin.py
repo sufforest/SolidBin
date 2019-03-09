@@ -5,18 +5,17 @@
 
 from sklearn.neighbors import kneighbors_graph
 import pandas as pd
-from scipy.sparse import csc_matrix,coo_matrix
+from scipy.sparse import csc_matrix
 import time
 import numpy as np
-import scipy
+from scipy import linalg
 
 from scipy.special import perm
 
-from scipy.sparse import linalg
 from sklearn.cluster import KMeans
 from sklearn import metrics
-
 import scipy.sparse as sp
+
 import logging
 import os
 import argparse
@@ -51,7 +50,7 @@ def gen_knn_affinity_graph(X, top=np.Inf):
     max_ = A.max()
     A=A.toarray()
     A = 1 - (A - min_)/(max_-min_)
-    A =coo_matrix(A)
+    A =csc_matrix(A)
     return A
 
 
@@ -91,6 +90,7 @@ def maximum(A, B):
 def mapping_all(S, k, ML, CL, alpha, beta):
     D = sp.diags(np.asarray(S.sum(0))[0], format="csc")
     Dsqrt = D.sqrt()
+    del D
     W = S
     if not isinstance(ML, list) and alpha:
         ML = csc_matrix(ML)
@@ -105,12 +105,14 @@ def mapping_all(S, k, ML, CL, alpha, beta):
         logger.error("matrix must have two dims")
         sys.exit(0)
 
-    DW = sp.linalg.spsolve(Dsqrt, W)
-    LT = sp.linalg.spsolve(csc_matrix(Dsqrt.T), csc_matrix(DW.T))
+    DW = linalg.solve(Dsqrt.toarray(), W.toarray())
+    LT = linalg.solve(Dsqrt.T.toarray(), DW.T)
+    del DW
+
     L = (LT.T + LT) / 2
-    #d, v = linalg.eigs(L, k, which='LR')
+    del LT
     numL=L.shape[0] #
-    d, v =scipy.linalg.eigh(L.toarray(),eigvals=(numL-k,numL-1))#
+    d, v=linalg.eigh(L,eigvals=(numL-k,numL-1))#
     uu, dummy = np.real(v).T, np.real(d)
     return uu.astype(np.float)
 
