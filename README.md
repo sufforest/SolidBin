@@ -145,8 +145,12 @@ python $CONCOCT/scripts/gen_input_table.py \
   
   SolidBin mode | Usage  
   ------------- | -------------
- SolidBin-naive | --contig_file --coverage_profiles --composition_profiles --output  
- 单元格内容l  | 单元格内容
+ SolidBin-naive | --contig_file --coverage_profiles --composition_profiles --output --log 
+ SolidBin-SFS   | --contig_file --coverage_profiles --composition_profiles --output --log --use_sfs
+ SolidBin-coalign   | --contig_file --coverage_profiles --composition_profiles --output --log --priori_ml_list
+ SolidBin-CL   | --contig_file --coverage_profiles --composition_profiles --output --log --priori_cl_list
+ SolidBin-SFS-CL   | --contig_file --coverage_profiles --composition_profiles --output --log --priori_cl_list --use_sfs
+ 
 ## <a name="preprocessing"></a>MATLAB VERSION
 We also provide MATLAB version code for the reproduction of the results in our paper "SolidBin: Improving Metagenome Binning with Semi-supervised Normalized Cut".
 
