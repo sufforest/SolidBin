@@ -144,7 +144,7 @@ python $CONCOCT/scripts/gen_input_table.py \
 > - different SolidBin modes
   SolidBin mode | Usage  
   ------------- | -------------
- SolidBin-naive  | [--contig_file CONTIG_FILE]
+ SolidBin-naive  | --contig_file CONTIG_FILE
  单元格内容l  | 单元格内容
 ## <a name="preprocessing"></a>MATLAB VERSION
 We also provide MATLAB version code for the reproduction of the results in our paper "SolidBin: Improving Metagenome Binning with Semi-supervised Normalized Cut".
