@@ -166,7 +166,8 @@ NOTICE: We only test this wrapper on MATLAB R2017a and we can not guarantee the 
 
 [2] Alneberg, Johannes, et al. "Binning metagenomic contigs by coverage and composition." Nature methods 11.11 (2014): 1144.             
 
-
+## <a name="preprocessing"></a>Citation
+Wang Z., et al. "SolidBin: Improving Metagenome Binning with Semi-supervised Normalized Cut." Bioinformatics. 2019 Apr 12. pii: btz253. doi: 10.1093/bioinformatics/btz253.
 
 
 
