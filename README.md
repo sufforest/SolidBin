@@ -172,7 +172,7 @@ Dr. Shanfeng Zhu: zhusf@fudan.edu.cn
 ## <a name="preprocessing"></a>Citation
 Wang Z., et al. "SolidBin: Improving Metagenome Binning with Semi-supervised Normalized Cut." Bioinformatics. 2019 Apr 12. pii: btz253. doi: 10.1093/bioinformatics/btz253.
 
-Note: If you cite SolidBin in your paper, please specify the mode of SolidBin you used in your paper to avoid confusion . Thank you. 
+Note: If you cite SolidBin in your paper, please specify the mode of SolidBin you used in your paper to avoid confusion. Thank you. 
 
 
 
