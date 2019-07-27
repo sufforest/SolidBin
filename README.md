@@ -1,4 +1,4 @@
-# SolidBin :Improving Metagenome Binning with Semi-supervised Normalized Cut
+# SolidBin: Improving Metagenome Binning with Semi-supervised Normalized Cut
 A genome binning method for contig binning, based on semi-supervised spectral clustering method.
 
 ## <a name="started"></a>Getting Started
