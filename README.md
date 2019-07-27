@@ -158,7 +158,10 @@ We have wrapped our MATLAB code in Python and you can use it in the same way as 
 
 NOTICE: We only test this wrapper on MATLAB R2017a and we can not guarantee the stabibility on other versions of MATLAB.
 
-
+## <a name="preprocessing"></a>Contacts and bug reports
+Please send bug reports or questions (such as the appropriate modes for your datasets) to
+Ziye Wang: zwang17@fudan.edu.cn
+Dr. Shanfeng Zhu: zhusf@fudan.edu.cn
 
 ## <a name="preprocessing"></a>References
 
@@ -168,6 +171,8 @@ NOTICE: We only test this wrapper on MATLAB R2017a and we can not guarantee the 
 
 ## <a name="preprocessing"></a>Citation
 Wang Z., et al. "SolidBin: Improving Metagenome Binning with Semi-supervised Normalized Cut." Bioinformatics. 2019 Apr 12. pii: btz253. doi: 10.1093/bioinformatics/btz253.
+
+Note: If you cite SolidBin in your paper, please specify the mode of SolidBin you used in your paper to avoid confusion . Thank you. 
 
 
 
