@@ -160,8 +160,7 @@ NOTICE: We only test this wrapper on MATLAB R2017a and we can not guarantee the 
 
 ## <a name="preprocessing"></a>Contacts and bug reports
 Please send bug reports or questions (such as the appropriate modes for your datasets) to
-Ziye Wang: zwang17@fudan.edu.cn
-Dr. Shanfeng Zhu: zhusf@fudan.edu.cn
+Ziye Wang: zwang17@fudan.edu.cn and Dr. Shanfeng Zhu: zhusf@fudan.edu.cn
 
 ## <a name="preprocessing"></a>References
 
