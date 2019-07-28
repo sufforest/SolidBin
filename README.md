@@ -35,7 +35,7 @@ For the reproducibility, we provide a complete example to show how each profile 
 
 ### Dependency
 
-Fisrt of all, we download [CONCOCT v4.0](https://github.com/BinPro/CONCOCT/archive/0.4.0.zip) and set environmental variables for deoendency software.
+Fisrt of all, we download [CONCOCT v4.0](https://github.com/BinPro/CONCOCT/archive/0.4.0.zip) and set environmental variables for software dependencies.
 
 ```sh
 $ CONCOCT=/path/to/your/CONCOCT
