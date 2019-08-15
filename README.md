@@ -3,83 +3,82 @@ A genome binning method for contig binning, based on semi-supervised spectral cl
 
 ## <a name="started"></a>Getting Started
 
-We recommend using Anaconda to run SolidBin. Download [here](https://www.continuum.io/downloads)
+### <a name="docker"></a>Conda
 
-After installing Anaconda, fisrt obtain SolidBin:
+We recommend using conda to run SolidBin. Download [here](https://www.continuum.io/downloads)
+
+After installing Anaconda (or miniconda), fisrt obtain SolidBin:
 
 ```sh
 git clone https://github.com/sufforest/SolidBin
 ```
-Create a Anaconda environment and activate it:
+Then simply create a solidbin environment 
 
 ```sh
-conda create -n solidbin python=3.6
+conda env create -f environment.yml
 source activate solidbin
 ```
 
-Install the SolidBin dependencies into this environment:
+
+
+### <a name="docker"></a>Docker
+
+We also provide our docker image. If you are more familiar with docker, you can just get our image by:
 
 ```sh
-$ conda install numpy pandas scikit-learn scipy
+docker pull sufforest/solidbin
+```
+
+A simple way to use our image is just mount you data directory and run:
+
+```sh
+docker run -it -v /data/StrainMock/input:/input -v /data/StrainMock/output:/output solidbin python SolidBin.py --contig_file /input/StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta --composition_profiles /input/kmer_4.csv --coverage_profiles /input/cov_inputtableR.tsv --output /output/result.tsv --log /output/log.txt
+```
+
+Suppose that /data/StrainMock contains the data in your machine, this command mount two directories into the container so that our SolidBin can use them.
+
+If you do not have composition or coverage profiles,  you can just enter the container and generate them by yourself.
+
+```sh
+docker run -it -v /data/StrainMock/input:/input -v /data/StrainMock/output:/output solidbin sh
 ```
 
 ## <a name="preprocessing"></a>Preprocessing
 
 The preprocessing steps aim to generate coverage profile and composition profile as input to our program.
 
-There are several methods that can generate these two types of information.
-
-We recommend using the way CONCOCT adopts, you can find it [here](https://github.com/BinPro/CONCOCT/). 
-
-For the reproducibility, we provide a complete example to show how each profile is generated:
-
-### Dependency
-
-Fisrt of all, we download [CONCOCT v4.0](https://github.com/BinPro/CONCOCT/archive/0.4.0.zip) and set environmental variables for deoendency software.
-
-```sh
-$ CONCOCT=/path/to/your/CONCOCT
-$ MRKDUP=/path/to/your/picard-tools-1.77/MarkDuplicates.jar
-
-```
-
-We use Bowtie2 to map the reads of each sample back to the assembly.
-And then we use MarkDuplicates to remove PCR duplicates, use BEDTools to compute the coverage histogram for each bam file.
-
-After we install all dependecies and set environmental variables correctly, we can generate coverage profile and composition profile for the given dataset(Make sure that directories of dependency are both in the PATH environmental variable).
-
-Take dataset *StrainMock* as an example.
+There are several methods that can generate these two types of information and we provide one of them below.
 
 
 ### Composition Profile
 
-Composition profile is the vector representation of contigs and we use kmer(k=4) to generate this information.
+Composition profile is the vector representation of contigs and we use kmer to generate this information.
 
 ```
-$ python $CONCOCT/scripts/fasta_to_features.py /path/to/data/StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta 9417 4 /path/to/input/composition.csv
+$ python scripts/gen_kmer.py /path/to/data/contig.fasta 4 /path/to/input/composition.csv
 ```
-9417 is the number of contigs in this data and 4 is the k we choose.
+Here we choose k=4. By default we only keep contigs longer than 1000, you can specify a different number using -t.
 
 ### Coverage Profile
-For the coverage profile, we first create the index on the assembly for bowtie2.
+For the coverage profile we use minimap, since it can address both short read and long read samples.
+
+If you use SolidBin in docker, all dependencies and environment variables have been configured correctly, you can just mount you input directory into /input in docker, then slightly modify gen_cov.sh and run it.
+
+You input directory should look like this:
 
 ```
-$ bowtie2-build StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta
+.
++-- assembly.fasta
++-- sr
+|   +-- short_read_sample_1
+|   +-- short_read_sample_2
++-- pb
+|   +-- pacbio_sample_1
+|   +-- pacbio_sample_2
+|   +-- pacbio_sample_3
 ```
-Then we map the reads of each sample (Here we choose *Sample1006*).
 
-```
-$CONCOCT/scripts/map-bowtie2-markduplicates.sh -ct 10 -p '-f' /path/to/samples/Sample1006_1.fasta /path/to/samples/Sample1006/Sample1006_2.fasta pair /path/to/data/StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta Sample1006 /path/to/samples/Sample1006/
-```
-
-Finally, we can generate coverage profile from the bam files for each sample.
-
-```
-python $CONCOCT/scripts/gen_input_table.py \
-/path/to/data/StrainMock_Contigs_cutup_10K_nodup_filter_1K.fast \
-/path/to/samples/Sample1006/Sample1006_pair-smds.bam /path/to/other/sample/bamfile... \
-> /path/to/input/coverage.tsv
-```
+For conda environment , you should check whether perl is installed.
 
 
 
@@ -99,7 +98,7 @@ python $CONCOCT/scripts/gen_input_table.py \
                    [--use_sfs]
 
 > - arguments
-				
+
   	--contig_file CONTIG_FILE: 
               The contigs file.
 	
@@ -115,7 +114,7 @@ python $CONCOCT/scripts/gen_input_table.py \
 	
   	--output OUTPUT:
               The output file, storing the binning result.
-  
+
 > - optional
 
   	--priori_ml_list ML_LIST:
@@ -142,7 +141,7 @@ python $CONCOCT/scripts/gen_input_table.py \
     --use_sfs:
               Use sequence feature similarity to generate must-link constraints.
 > - different SolidBin modes
-  
+
   SolidBin mode | Usage  
   ------------- | -------------
  SolidBin-naive | --contig_file --coverage_profiles --composition_profiles --output --log 
@@ -150,7 +149,7 @@ python $CONCOCT/scripts/gen_input_table.py \
  SolidBin-coalign   | --contig_file --coverage_profiles --composition_profiles --output --log --priori_ml_list
  SolidBin-CL   | --contig_file --coverage_profiles --composition_profiles --output --log --priori_cl_list
  SolidBin-SFS-CL   | --contig_file --coverage_profiles --composition_profiles --output --log --priori_cl_list --use_sfs
- 
+
 ## <a name="preprocessing"></a>MATLAB VERSION
 We also provide MATLAB version code for the reproduction of the results in our paper "SolidBin: Improving Metagenome Binning with Semi-supervised Normalized Cut".
 
