@@ -19,6 +19,11 @@ conda env create -f environment.yml
 source activate solidbin
 ```
 
+```sh
+To esitimate the bin number, you need grant permission of the files 
+chmod +x /path_to_solidbin/auxiliary/hmmer-3.1b1/bin/hmmsearch
+chmod +x /path_to_solidbin/auxiliary/FragGeneScan1.19/FragGeneScan
+```
 
 
 ### <a name="docker"></a>Docker
