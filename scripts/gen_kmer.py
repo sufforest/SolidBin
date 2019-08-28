@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 '''
 '''
 from __future__ import print_function
@@ -7,17 +7,19 @@ from itertools import product
 from Bio import SeqIO
 # optimized sliding window function from
 # http://stackoverflow.com/a/7636587
-from itertools import tee, izip
+from itertools import tee
 from collections import Counter, OrderedDict
 import pandas as pd
 import argparse
+import mimetypes
+import os
 
 def window(seq,n):
     els = tee(seq,n)
     for i,el in enumerate(els):
-        for _ in xrange(i):
+        for _ in range(i):
             next(el, None)
-    return izip(*els)
+    return zip(*els)
 
 def generate_feature_mapping(kmer_len):
     BASE_COMPLEMENT = {"A":"T","T":"A","G":"C","C":"G"}
@@ -91,4 +93,4 @@ if __name__=="__main__":
     parser.add_argument("-o",type=str,default="kmer.csv",help="output file")
     parser.add_argument("-l",type=str,default=None,help="length file")
     args = parser.parse_args()
-    generate_features_from_fastx(args.f,args.l,args.k,args.o,args.l)
+    generate_features_from_fastx(args.f,args.t,args.k,args.o,args.l)
