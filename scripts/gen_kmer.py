@@ -93,4 +93,4 @@ if __name__=="__main__":
     parser.add_argument("-o",type=str,default="kmer.csv",help="output file")
     parser.add_argument("-l",type=str,default=None,help="length file")
     args = parser.parse_args()
-    generate_features_from_fastx(args.f,args.t,args.k,args.o,args.l)
+    generate_features_from_fastx(args.fastx_file,args.t,args.k,args.o,args.l)
