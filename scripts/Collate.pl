@@ -28,8 +28,8 @@ for my $file (@files){
 } 
 
 
-my $cName = join(",",@names);
-print "contig,$cName\n";
+my $cName = join("\t",@names);
+print "contig\t$cName\n";
 
 for my $contig(sort {$a=~/.*_(\d+)/; my $a1 = $1; $b=~/.*_(\d+)/; my $b1 = $1; $a1 <=> $b1;} keys %hashContigs){
     if($contig ne "genome"){
@@ -49,7 +49,7 @@ for my $contig(sort {$a=~/.*_(\d+)/; my $a1 = $1; $b=~/.*_(\d+)/; my $b1 = $1; $
             $sum += $v;
         }
         if($sum > 0.0){
-            my $vstring = join(",",@vals);
+            my $vstring = join("\t",@vals);
             print "$contig\t$vstring\n";
         }
     }
