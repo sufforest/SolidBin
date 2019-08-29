@@ -110,7 +110,7 @@ def get_seed(contig_file, hard=0):
     os.system("chmod 777 " + hmmExeURL)
     markerExeURL = os.path.join(dir_path, 'auxiliary', 'test_getmarker.pl')
     os.system("chmod 777 " + markerExeURL)
-    markerURL = os.path.join(os.getcwd(), 'auxiliary', 'marker.hmm')
+    markerURL = os.path.join(dir_path, 'auxiliary', 'marker.hmm')
     seedURL = contig_file+".seed"
     fragResultURL = contig_file+".frag.faa"
     hmmResultURL = contig_file+".hmmout"
