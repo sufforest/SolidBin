@@ -310,9 +310,11 @@ def save_result(result, filepath, namelist):
     filedir, filename = os.path.split(filepath)
     if not filename:
         filename = "result.csv"
+    if not filedir:
+        filedir = "solidbin_out"
     if not os.path.exists(filedir):
         os.makedirs(filedir)
-    f = open(filepath, 'w')
+    f = open(filedir + '/' + filename, 'w')
     f.write("@Version:0.9.0\n")
     f.write("@SampleID:{}\n".format(os.path.basename(contig_file)))
     f.write("@@SEQUENCEID\tBINID\n")
