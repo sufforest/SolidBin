@@ -58,4 +58,4 @@ do
 done
 
 
-${solidbin_dir}/scripts/Collate.pl $mapdir > ${input_dir}/coverage.tsv
+perl ${solidbin_dir}/scripts/Collate.pl $mapdir > ${input_dir}/coverage.tsv
