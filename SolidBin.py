@@ -19,6 +19,13 @@ import os
 import argparse
 import sys
 
+import subprocess
+import re
+import shutil
+import csv
+import time
+import gzip
+
 logger = logging.getLogger('SolidBin 1.2')
 
 logger.setLevel(logging.INFO)
@@ -711,13 +718,18 @@ if __name__ == '__main__':
 
     X_t, namelist, mapObj = gen_X(com_file, cov_file)
     contigNum = X_t.shape[0]
+    contig_file = args.contig_file
+    length_dict =get_length(contig_file)
+    length_weight=[ length_dict[name] for name in namelist]
+    length_weight=np.array(length_weight)
+    length_weight=length_weight.astype(np.float32)
+
     logger.info("Start generating affinity matrix")
     affinity_mat = gen_knn_affinity_graph(X_t)
     affinity_mat = maximum(affinity_mat, affinity_mat.T)
     affinity_mat = csc_matrix(affinity_mat)
     logger.info("Finish generating affinity matrix")
-    contig_file = args.contig_file
-    length_dict =get_length(contig_file)    
+
     seed_list=None
     if args.clusters==0:
         seed_list=get_seed(contig_file)
