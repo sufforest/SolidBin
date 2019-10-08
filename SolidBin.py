@@ -19,7 +19,7 @@ import os
 import argparse
 import sys
 
-logger = logging.getLogger('SolidBin')
+logger = logging.getLogger('SolidBin 1.2')
 
 logger.setLevel(logging.INFO)
 
@@ -313,13 +313,377 @@ def save_result(result, filepath, namelist):
     if not os.path.exists(filedir):
         os.makedirs(filedir)
     f = open(filepath, 'w')
-    f.write("@Version:0.9.0\n")
-    f.write("@SampleID:{}\n".format(os.path.basename(contig_file)))
-    f.write("@@SEQUENCEID\tBINID\n")
     for contigIdx in range(len(namelist)):
         f.write("{}\t{}\n".format(namelist[contigIdx],result[contigIdx].item(0)))
     f.close()
 
+def postprocess_with_checkm(output):
+    checkm_out_dir = os.path.dirname(output)+ '/checkm_out'
+    os.mkdir(checkm_out_dir)
+    output_dir = os.path.dirname(
+        args.output) + '/ori_result'
+    os.mkdir(output_dir)
+    gen_bins(contig_file,args.output, output_dir, "ori_result")
+
+    checkm_file = checkm_out_dir+"/checkm_analysis_init.txt"
+    checkm_file_output = open((checkm_file), "w")
+    threads = 45
+    subprocess.call(["checkm", "lineage_wf", "-x", "bin", "-t", str(threads), output_dir, checkm_out_dir], stdout=checkm_file_output)
+
+    suffix_str = '.bin'
+    checkm_analysis(checkm_file, suffix_str, checkm_out_dir)
+    #
+    #处理high_com_p_high_cont文件
+    logger.info("Recluster the contigs from high_com_p_high_cont bins")
+    high_com_p_high_cont_path = os.path.dirname(output_dir) + "/High_completion_high_contamination"
+    if not os.listdir(high_com_p_high_cont_path):
+        recluster_hh_bins(high_com_p_high_cont_path, mapObj, X_t,length_weight, namelist)
+
+    #recluster other contigs
+    logger.info("Recluster other contigs.")
+    not_clustered_path = os.path.dirname(output_dir) + "/others"
+    if not os.listdir(not_clustered_path):
+        recluster_other_contigs(not_clustered_path, X_t, namelist, mapObj,length_weight)
+
+    convert(os.path.dirname(output_dir)+'/good_bins',
+            args.output+'.with_postprocess.tsv')
+
+
+
+def read_fasta_file(fasta_file):
+    with open(fasta_file, 'r') as read_handler:
+        for line in read_handler:
+            line = line.strip()
+            if not line:
+                continue
+            if line.startswith(">"):
+                yield line[1:]
+
+def convert(paths, output_file):
+    files = os.listdir(paths)
+    fasta_files =[]
+    for file in files :
+        if file.endswith(('.fasta', '.fa','.fna','.bin')):
+            fasta_files.append(file)
+    with open(output_file, 'w') as write_handler:
+        write_handler.write("@Version:0.9.0\n")
+        write_handler.write("@SampleID:{}\n".format(os.path.basename(contig_file)))
+        write_handler.write("@@SEQUENCEID\tBINID\n")
+        for bin_id, fasta_file in enumerate(fasta_files):
+            for sequence_id in read_fasta_file(paths+'/'+fasta_file):
+                write_handler.write("%s\t%s\n" % (sequence_id, bin_id))#change from ","
+# change from binsanity
+def checkm_analysis(file_, suffix_str, output):
+    file_object = open(file_, 'r')
+    lines = file_object.readlines()
+    file_deal = open(file_ + '_deal.txt', 'w')
+    try:
+        for line in lines:
+            if line.startswith(' '):
+                print(line)
+                file_deal.writelines(line)
+    finally:
+        file_object.close()
+    file_deal.close()  # 要不会影响读入
+
+    checkm = list(csv.reader(open(file_ + '_deal.txt', 'r')))
+    new = []
+    for list_ in checkm:
+        x = re.sub(' +', ' ', str(re.split(r'\t+', list_[0].rstrip('\t'))))
+        new.append(x)
+
+    del new[0]
+
+    checkm_info_list = [list_.strip("['']") for list_ in new]
+    checkm_info_list = [x.split() for x in checkm_info_list]
+
+    good_bins = []
+    High_completion_high_contamination =[]
+    others = []
+
+    for list_ in checkm_info_list:
+        if ((float(list_[12]) > 70 and (float(list_[13]) < 15)) or (float(list_[12]) -5* float(list_[13]))>50) :
+            good_bins.append(list_[0])
+        elif (float(list_[12]) > 70 and (float(list_[13]) >50)):
+            High_completion_high_contamination.append(list_[0])
+        else:
+            others.append(list_[0])
+
+    if os.path.isdir(os.path.dirname(output) + "/good_bins") is False:
+        os.makedirs(os.path.dirname(output) + "/good_bins")
+    if os.path.isdir(os.path.dirname(output) + "/High_completion_high_contamination") is False:
+        os.makedirs(os.path.dirname(output) + "/High_completion_high_contamination")
+    if os.path.isdir(os.path.dirname(output) + "/others") is False:
+        os.makedirs(os.path.dirname(output) + "/others")
+
+    for name in good_bins:
+        shutil.move((os.path.dirname(output) +'/ori_result'+ '/' + str(name) + suffix_str),
+                    os.path.dirname(output) + "/good_bins")
+    for name in High_completion_high_contamination:
+        shutil.move((os.path.dirname(output) +'/ori_result'+ '/' + str(name) + suffix_str),
+                    os.path.dirname(output) + "/High_completion_high_contamination")
+    for name in others:
+        shutil.move((os.path.dirname(output) +'/ori_result'+ '/' + str(name) + suffix_str), os.path.dirname(output) + "/others")
+
+def recluster_hh_bins(high_com_p_high_cont_path,mapObj,X_t,length_weight,namelist):
+    hh_files = os.listdir(high_com_p_high_cont_path)
+    for file_ in hh_files:
+        if file_.endswith('.bin'):
+            hh_contigs_id = []
+            hh_contig_file = high_com_p_high_cont_path + '/' + file_
+            for seq_record in SeqIO.parse(hh_contig_file, "fasta"):
+                hh_contigs_id.append(seq_record.id)
+            hh_contigs_id_number = [mapObj[x] for x in hh_contigs_id]
+            X_t_hh_unclustered = X_t[hh_contigs_id_number]
+            bin_number = gen_bestk(hh_contig_file,X_t_hh_unclustered,0)
+
+            hh_weight = []
+            for i in range(len(hh_contigs_id_number)):
+                hh_weight.append(length_weight[hh_contigs_id_number[i]])
+             #seedurl不一定存在
+            seedURL = hh_contig_file + ".seed"
+            global seed_idx
+            if os.path.exists(seedURL):
+                seed_list = []
+                with open(seedURL) as f:
+                    for line in f:
+                        seed_list.append(line.rstrip('\n'))
+                name_map = dict(zip(hh_contigs_id, range(len(hh_contigs_id))))
+                seed_idx = [name_map[seed_name] for seed_name in seed_list]
+                seed_center = X_t_hh_unclustered[seed_idx]
+                km = KMeans(n_clusters=len(seed_idx), init=seed_center, n_jobs=-1, random_state=7)
+            else:
+                km = KMeans(n_clusters=bin_number, n_jobs=-1,n_init=30, random_state=7)
+
+            km.fit(X_t_hh_unclustered, sample_weight=hh_weight)
+            idx = km.labels_
+            save_result_refine(idx, hh_contig_file + ".reclustered.tsv",
+                               namelist, hh_contigs_id_number)
+            gen_bins(hh_contig_file, hh_contig_file+".reclustered.tsv",
+                     os.path.dirname(high_com_p_high_cont_path) + '/good_bins',file_+ "_reclustered")
+
+def gen_bestk(contig_file, X_mat,bestK=0):#改成无论是否固定k都要跑生成seed，去掉没有生成的话从5开始随机的情况
+    fragScanURL = os.path.join(os.getcwd(), 'auxiliary', 'FragGeneScan1.19', 'run_FragGeneScan.pl')
+    os.system("chmod +777 " + fragScanURL)
+    hmmExeURL = os.path.join(os.getcwd(), 'auxiliary', 'hmmer-3.1b1', 'bin', 'hmmsearch')
+    os.system("chmod 777 " + hmmExeURL)
+    markerExeURL = os.path.join(os.getcwd(), 'auxiliary', 'test_getmarker.pl')
+    os.system("chmod 777 " + markerExeURL)
+    markerURL = os.path.join(os.getcwd(), 'auxiliary', 'marker.hmm')
+    seedURL = contig_file + ".seed"
+    fragResultURL = contig_file + ".frag.faa"
+    hmmResultURL = contig_file + ".hmmout"
+
+    if not (os.path.exists(fragResultURL)):
+        fragCmd = fragScanURL + " -genome=" + contig_file + " -out=" + contig_file + ".frag -complete=0 -train=complete -thread=48 1>" + contig_file + ".frag.out 2>" + contig_file + ".frag.err"
+        logger.info("exec cmd: " + fragCmd)
+        os.system(fragCmd)
+
+    if os.path.exists(fragResultURL):
+        if not (os.path.exists(hmmResultURL)):
+            hmmCmd = hmmExeURL + " --domtblout " + hmmResultURL + " --cut_tc --cpu 48 " + markerURL + " " + fragResultURL + " 1>" + hmmResultURL + ".out 2>" + hmmResultURL + ".err"
+            logger.info("exec cmd: " + hmmCmd)
+            os.system(hmmCmd)
+
+        if os.path.exists(hmmResultURL):
+            if not (os.path.exists(seedURL)):
+                markerCmd = markerExeURL + " " + hmmResultURL + " " + contig_file + " 1000 " + seedURL
+                logger.info("exec cmd: " + markerCmd)
+                os.system(markerCmd)
+
+            if os.path.exists(seedURL):
+                candK = file_len(seedURL)
+                maxK = 2 * candK
+                stepK = 2
+            else:
+                logger.info("seed not exist, k start from 2 " )
+                candK = 2
+                maxK = 20
+                stepK = 2
+        else:
+            logger.info("Hmmsearch failed! Not exist: " + hmmResultURL)
+            sys.exit()
+    else:
+        logger.info("FragGeneScan failed! Not exist: " + fragResultURL)
+        sys.exit()
+
+    if bestK == 0:
+        bestK = candK
+        bestSilVal = 0
+        t = time.time()
+        for k in range(candK, maxK, stepK):
+            kmeans = KMeans(n_clusters=k, init='k-means++', random_state=9, n_jobs=-1)
+            kmeans.fit(X_mat)
+            silVal = silhouette(X_mat, kmeans.cluster_centers_, kmeans.labels_)
+            logger.info("k:" + str(k) + "\tsilhouette:" + str(silVal) + "\telapsed time:" + str(time.time() - t))
+            t = time.time()
+
+            if silVal > bestSilVal:
+                bestSilVal = silVal
+                bestK = k
+            else:
+                break
+
+        candK = bestK + 4
+        bestSilVal_2nd = 0
+        for k in range(candK, maxK, stepK):
+            kmeans = KMeans(n_clusters=k, init='k-means++', random_state=9, n_jobs=-1)
+            kmeans.fit(X_mat)
+            silVal_2nd = silhouette(X_mat, kmeans.cluster_centers_, kmeans.labels_)
+            logger.info("k:" + str(k) + "\tsilhouette:" + str(silVal_2nd) + "\telapsed time:" + str(time.time() - t))
+            t = time.time()
+            if silVal_2nd > bestSilVal_2nd:
+                bestSilVal_2nd = silVal_2nd
+                bestK = k
+            else:
+                break
+        if bestSilVal_2nd > bestSilVal:
+            bestSilVal = bestSilVal_2nd
+        else:
+            bestK = candK - 4
+        logger.info("bestk:" + str(bestK) + "\tsilVal:" + str(bestSilVal))
+
+    else:
+        logger.info("Use the pre-specified cluster number! k=" + str(bestK))
+
+    return bestK
+
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+def silhouette(X, W, label):
+    X_colsum = np.sum(X ** 2, axis=1)
+    X_colsum = X_colsum.reshape(len(X_colsum), 1)
+    W_colsum = np.sum(W ** 2, axis=1)
+    W_colsum = W_colsum.reshape(len(W_colsum), 1)
+
+    Dsquare = np.tile(X_colsum, (1, W.shape[0])) + np.tile(W_colsum.T, (X.shape[0], 1)) - 2 * X.dot(W.T)
+    # avoid error caused by accuracy
+    Dsquare[Dsquare < 0] = 0
+    D = np.sqrt(Dsquare)
+    aArr = D[np.arange(D.shape[0]), label]
+    D[np.arange(D.shape[0]), label] = np.inf
+    bArr = np.min(D, axis=1)
+    tmp = (bArr - aArr) / np.maximum(aArr, bArr)
+    return np.mean(tmp)
+
+
+def gen_bins(fastafile, resultfile, outputdir, prefix_str):
+    # read fasta file
+    logger.info("Processing file:\t{}".format(fastafile))
+    sequences = {}
+    if fastafile.endswith("gz"):
+        with gzip.open(fastafile, 'r') as f:
+            for line in f:
+                line = str(line, encoding="utf-8")
+                if line.startswith(">"):
+                    if " " in line:
+                        seq, others = line.split(' ', 1)
+                        sequences[seq] = ""
+                    else:
+                        seq = line.rstrip("\n")
+                        sequences[seq] = ""
+                else:
+                    sequences[seq] += line.rstrip("\n")
+    else:
+        with open(fastafile, 'r') as f:
+            for line in f:
+                if line.startswith(">"):
+                    if " " in line:
+                        seq, others = line.split(' ', 1)
+                        sequences[seq] = ""
+                    else:
+                        seq = line.rstrip("\n")
+                        sequences[seq] = ""
+                else:
+                    sequences[seq] += line.rstrip("\n")
+    logger.info("Reading Map:\t{}".format(resultfile))
+    dic = {}
+    with open(resultfile, "r") as f:
+        for line in f:
+            contig_name, cluster_name = line.strip().split('\t')#change from split(',')
+            try:
+                dic[cluster_name].append(contig_name)
+            except:
+                dic[cluster_name] = []
+                dic[cluster_name].append(contig_name)
+    logger.info("Writing bins:\t{}".format(outputdir))
+    if not os.path.exists(outputdir):
+        os.makedirs(outputdir)
+
+    bin_name = 0
+    for _, cluster in dic.items():
+        binfile = os.path.join(outputdir, "{}_{}.bin".format(prefix_str,bin_name))
+        with open(binfile, "w") as f:
+            for contig_name in cluster:
+                contig_name = ">" + contig_name
+                try:
+                    sequence = sequences[contig_name]
+                except:
+                    bin_name += 1
+                    continue
+                f.write(contig_name + "\n")
+                f.write(sequence + "\n")
+                bin_name += 1
+
+def recluster_other_contigs(not_clustered_path,X_t,namelist,mapObj,length_weight):
+    files = os.listdir(not_clustered_path)
+    other_contig_file = not_clustered_path + '/init_unclustered_contigs.fa'
+    ofile = open(other_contig_file, 'w')
+    # 遍历读取所有文件，并写入到输出文件
+    for fr in files:
+        if fr !='init_unclustered_contigs.fa':
+            for txt in open(not_clustered_path + '/' + fr, 'r'):
+                ofile.write(txt)
+    ofile.close()
+    unclassified_contigs_id = []
+    for seq_record in SeqIO.parse(other_contig_file, "fasta"):
+        unclassified_contigs_id.append(seq_record.id)
+    unclassified_contigs_id_number = [mapObj[x] for x in unclassified_contigs_id]
+    X_t_unclustered = X_t[unclassified_contigs_id_number]
+
+    bin_number = gen_bestk(other_contig_file, X_t_unclustered, 0)
+    logger.info("bin_number for other contigs: %d", bin_number)
+
+    unclassified_contigs_weight = []
+    for i in range(len(unclassified_contigs_id_number)):
+        unclassified_contigs_weight.append(length_weight[unclassified_contigs_id_number[i]])
+
+    seedURL = other_contig_file + ".seed"
+    global seed_idx
+    if os.path.exists(seedURL):
+        seed_list = []
+        with open(seedURL) as f:
+            for line in f:
+                seed_list.append(line.rstrip('\n'))
+        name_map = dict(zip(unclassified_contigs_id, range(len(unclassified_contigs_id))))
+        seed_idx = [name_map[seed_name] for seed_name in seed_list]
+        seed_center = X_t_unclustered[seed_idx]
+        km = KMeans(n_clusters=len(seed_idx), init=seed_center, n_jobs=-1,random_state=7)
+    else:
+        km = KMeans(n_clusters=bin_number, n_jobs=-1,n_init=30, random_state=7)
+
+    logger.info("Start bin the other bins.")
+    # 之后可以加GC，像binsanity那样
+    km.fit(X_t_unclustered,sample_weight=unclassified_contigs_weight)
+    idx = km.labels_
+    not_clustered_path_output = not_clustered_path + 'reclustered_result.tsv'
+    save_result_refine(idx, not_clustered_path_output, namelist,unclassified_contigs_id_number)
+    gen_bins(other_contig_file, not_clustered_path_output,os.path.dirname(not_clustered_path)+'/good_bins', "reclustered")
+
+def save_result_refine(result, filepath, namelist, unclassified_contigs_id_number):
+    filedir, filename = os.path.split(filepath)
+    if not filename:
+        filename = "result.tsv"
+    if not os.path.exists(filedir):
+        os.makedirs(filedir)
+    f = open(filepath, 'w')
+    for Idx in range(len(result)):
+        f.write(namelist[unclassified_contigs_id_number[Idx]] + "\t" + str(result[Idx].item(0)) + "\n")
+    f.close()
 
 if __name__ == '__main__':
     args = arguments()
@@ -437,3 +801,5 @@ if __name__ == '__main__':
     if args.log:
         logger.removeHandler(handler)
     logger.removeHandler(console_hdr)
+
+    postprocess_with_checkm(args.output)
