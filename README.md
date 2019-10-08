@@ -26,6 +26,13 @@ cd ~path_to_checkM
 python setup.py install
 ```
 
+You can run these commands to make the files executable
+```sh
+chmod +x ~path_to_SolidBin/auxiliary/test_getmarker.pl
+chmod +x ~path_to_SolidBin/auxiliary/FragGeneScan1.19/run_FragGeneScan.pl
+chmod +x ~path_to_SolidBin/auxiliary/hmmer-3.1b1/bin/hmmsearch
+```
+
 ### <a name="docker"></a>Docker (not the lastest version)
 
 We also provide our docker image. If you are more familiar with docker, you can just get our image by:
