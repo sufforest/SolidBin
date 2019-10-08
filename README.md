@@ -19,7 +19,12 @@ conda env create -f environment.yml
 source activate solidbin
 ```
 
+After that install checkM (python3 version) like this
 
+```sh
+cd ~path_to_checkM
+python setup.py install
+```
 
 ### <a name="docker"></a>Docker
 
