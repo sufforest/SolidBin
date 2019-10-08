@@ -19,9 +19,21 @@ conda env create -f environment.yml
 source activate solidbin
 ```
 
+After that install checkM (python3 version) like this
 
+```sh
+cd ~path_to_checkM
+python setup.py install
+```
 
-### <a name="docker"></a>Docker
+You can run these commands to make the files executable
+```sh
+chmod +x ~path_to_SolidBin/auxiliary/test_getmarker.pl
+chmod +x ~path_to_SolidBin/auxiliary/FragGeneScan1.19/run_FragGeneScan.pl
+chmod +x ~path_to_SolidBin/auxiliary/hmmer-3.1b1/bin/hmmsearch
+```
+
+### <a name="docker"></a>Docker (not the lastest version)
 
 We also provide our docker image. If you are more familiar with docker, you can just get our image by:
 
@@ -166,6 +178,10 @@ Ziye Wang: zwang17@fudan.edu.cn and Dr. Shanfeng Zhu: zhusf@fudan.edu.cn
 [1] Lu, Yang Young, et al. "COCACOLA: binning metagenomic contigs using sequence COmposition, read CoverAge, CO-alignment and paired-end read LinkAge." Bioinformatics 33.6 (2017): 791-798.
 
 [2] Alneberg, Johannes, et al. "Binning metagenomic contigs by coverage and composition." Nature methods 11.11 (2014): 1144.             
+
+[3] Parks DH, Imelfort M, Skennerton CT, Hugenholtz P, Tyson GW. 2015. "CheckM: assessing the quality of microbial genomes recovered from isolates, single cells, and metagenomes." Genome Research, 25: 1043–1055.
+
+[4] Graham ED, Heidelberg JF, Tully BJ. (2017) "BinSanity: unsupervised clustering of environmental microbial assemblies using coverage and affinity propagation." PeerJ 5:e3035
 
 ## <a name="preprocessing"></a>Citation
 Wang Z., et al. "SolidBin: Improving Metagenome Binning with Semi-supervised Normalized Cut." Bioinformatics. 2019 Apr 12. pii: btz253. doi: 10.1093/bioinformatics/btz253.
