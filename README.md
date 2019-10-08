@@ -26,7 +26,7 @@ cd ~path_to_checkM
 python setup.py install
 ```
 
-### <a name="docker"></a>Docker
+### <a name="docker"></a>Docker (not the lastest version)
 
 We also provide our docker image. If you are more familiar with docker, you can just get our image by:
 
