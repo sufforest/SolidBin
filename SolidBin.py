@@ -343,13 +343,13 @@ def postprocess_with_checkm(output):
     #处理high_com_p_high_cont文件
     logger.info("Recluster the contigs from high_com_p_high_cont bins")
     high_com_p_high_cont_path = os.path.dirname(output_dir) + "/High_completion_high_contamination"
-    if not os.listdir(high_com_p_high_cont_path):
+    if os.listdir(high_com_p_high_cont_path):
         recluster_hh_bins(high_com_p_high_cont_path, mapObj, X_t,length_weight, namelist)
 
     #recluster other contigs
     logger.info("Recluster other contigs.")
     not_clustered_path = os.path.dirname(output_dir) + "/others"
-    if not os.listdir(not_clustered_path):
+    if os.listdir(not_clustered_path):
         recluster_other_contigs(not_clustered_path, X_t, namelist, mapObj,length_weight)
 
     convert(os.path.dirname(output_dir)+'/good_bins',
