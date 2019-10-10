@@ -31,6 +31,7 @@ You can run these commands to make the files executable
 chmod +x ~path_to_SolidBin/auxiliary/test_getmarker.pl
 chmod +x ~path_to_SolidBin/auxiliary/FragGeneScan1.19/run_FragGeneScan.pl
 chmod +x ~path_to_SolidBin/auxiliary/hmmer-3.1b1/bin/hmmsearch
+chmod +x ~path_to_SolidBin/auxiliary/auxiliary/FragGeneScan1.19/FragGeneScan
 ```
 
 ### <a name="docker"></a>Docker (not the lastest version)
