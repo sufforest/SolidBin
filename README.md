@@ -50,7 +50,7 @@ Composition profile is the vector representation of contigs and we use kmer to g
 ```
 $ python scripts/gen_kmer.py /path/to/data/contig.fasta 1000 4 /path/to/input/composition.csv
 ```
-Here we choose k=4. By default we only keep contigs longer than 1000, you can specify a different number.
+Here we choose k=4. By default we usually keep contigs longer than 1000, you can specify a different number.
 
 ### Coverage Profile
 For the coverage profile we use minimap, since it can address both short read and long read samples.
