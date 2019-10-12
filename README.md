@@ -20,6 +20,7 @@ source activate solidbin
 ```
 
 After that install checkM (python3 version) like this
+(please make sure you have installed openssl)
 
 ```sh
 cd ~path_to_checkM
