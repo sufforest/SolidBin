@@ -16,7 +16,8 @@ if __name__ == '__main__':
     args = arguments()
     print("Input args:")
     print("TAXAassign_file:\t" + args.TAXAassign_file)
-    TAXAassign_file = '/mnt/data4/wzy/preprocess/strmg_megahit_assembly/test_input/strmgCAMI2_short_read_pooled_gold_standard_assembly_ASSIGNMENTS.csv'
+    #TAXAassign_file = '/mnt/data4/wzy/preprocess/strmg_megahit_assembly/test_input/strmgCAMI2_short_read_pooled_gold_standard_assembly_ASSIGNMENTS.csv'
+    TAXAassign_file=args.TAXAassign_file
     namelist = pd.read_csv(TAXAassign_file, sep=',', header=None, usecols=range(1)).values[:, 0]
     taxaHeader = pd.read_csv(TAXAassign_file, sep=',', nrows=1)
     mapObj = dict(zip(namelist, range(len(namelist))))  #
