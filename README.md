@@ -35,27 +35,6 @@ chmod +x ~path_to_SolidBin/auxiliary/hmmer-3.1b1/bin/hmmsearch
 chmod +x ~path_to_SolidBin/auxiliary/auxiliary/FragGeneScan1.19/FragGeneScan
 ```
 
-### <a name="docker"></a>Docker (not the lastest version)
-
-We also provide our docker image. If you are more familiar with docker, you can just get our image by:
-
-```sh
-docker pull sufforest/solidbin
-```
-
-A simple way to use our image is just mount you data directory and run:
-
-```sh
-docker run -it -v /data/StrainMock/input:/input -v /data/StrainMock/output:/output solidbin python SolidBin.py --contig_file /input/StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta --composition_profiles /input/kmer_4.csv --coverage_profiles /input/cov_inputtableR.tsv --output /output/result.tsv --log /output/log.txt
-```
-
-Suppose that /data/StrainMock contains the data in your machine, this command mount two directories into the container so that our SolidBin can use them.
-
-If you do not have composition or coverage profiles,  you can just enter the container and generate them by yourself.
-
-```sh
-docker run -it -v /data/StrainMock/input:/input -v /data/StrainMock/output:/output solidbin sh
-```
 
 ## <a name="preprocessing"></a>Preprocessing
 
@@ -93,6 +72,29 @@ You input directory should look like this:
 ```
 
 For conda environment , you should check whether perl is installed.
+
+### <a name="docker"></a>Docker (not the lastest version)
+
+We also provide our docker image. If you are more familiar with docker, you can just get our image by:
+
+```sh
+docker pull sufforest/solidbin
+```
+
+A simple way to use our image is just mount you data directory and run:
+
+```sh
+docker run -it -v /data/StrainMock/input:/input -v /data/StrainMock/output:/output solidbin python SolidBin.py --contig_file /input/StrainMock_Contigs_cutup_10K_nodup_filter_1K.fasta --composition_profiles /input/kmer_4.csv --coverage_profiles /input/cov_inputtableR.tsv --output /output/result.tsv --log /output/log.txt
+```
+
+Suppose that /data/StrainMock contains the data in your machine, this command mount two directories into the container so that our SolidBin can use them.
+
+If you do not have composition or coverage profiles,  you can just enter the container and generate them by yourself.
+
+```sh
+docker run -it -v /data/StrainMock/input:/input -v /data/StrainMock/output:/output solidbin sh
+```
+
 
 
 
