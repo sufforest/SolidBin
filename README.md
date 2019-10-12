@@ -73,6 +73,12 @@ You input directory should look like this:
 
 For conda environment , you should check whether perl is installed.
 
+### Coalignment file
+To generate must-link constraints and cannot-link constraints, you can use TAXAassign [here](https://github.com/umerijaz/taxaassign) to obtain the assignments of some contigs, and then run like this:
+```sh
+python /scripts/gen_constraints.py --TAXAassign_file TAXAassign_output_file
+```
+
 ### <a name="docker"></a>Docker (not the lastest version)
 
 We also provide our docker image. If you are more familiar with docker, you can just get our image by:
