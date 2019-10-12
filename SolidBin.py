@@ -447,7 +447,6 @@ def recluster_hh_bins(high_com_p_high_cont_path,mapObj,X_t,length_weight,namelis
             hh_weight = []
             for i in range(len(hh_contigs_id_number)):
                 hh_weight.append(length_weight[hh_contigs_id_number[i]])
-             #seedurl不一定存在
             seedURL = hh_contig_file + ".seed"
             global seed_idx
             if os.path.exists(seedURL):
@@ -640,7 +639,6 @@ def recluster_other_contigs(not_clustered_path,X_t,namelist,mapObj,length_weight
     files = os.listdir(not_clustered_path)
     other_contig_file = not_clustered_path + '/init_unclustered_contigs.fa'
     ofile = open(other_contig_file, 'w')
-    # 遍历读取所有文件，并写入到输出文件
     for fr in files:
         if fr !='init_unclustered_contigs.fa':
             for txt in open(not_clustered_path + '/' + fr, 'r'):
@@ -674,7 +672,6 @@ def recluster_other_contigs(not_clustered_path,X_t,namelist,mapObj,length_weight
         km = KMeans(n_clusters=bin_number, n_jobs=-1,n_init=30, random_state=7)
 
     logger.info("Start bin the other bins.")
-    # 之后可以加GC，像binsanity那样
     km.fit(X_t_unclustered,sample_weight=unclassified_contigs_weight)
     idx = km.labels_
     not_clustered_path_output = not_clustered_path + 'reclustered_result.tsv'
