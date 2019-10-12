@@ -163,13 +163,6 @@ For conda environment , you should check whether perl is installed.
  SolidBin-CL   | --contig_file --coverage_profiles --composition_profiles --output --log --priori_cl_list
  SolidBin-SFS-CL   | --contig_file --coverage_profiles --composition_profiles --output --log --priori_cl_list --use_sfs
 
-## <a name="preprocessing"></a>MATLAB VERSION
-We also provide MATLAB version code for the reproduction of the results in our paper "SolidBin: Improving Metagenome Binning with Semi-supervised Normalized Cut".
-
-We have wrapped our MATLAB code in Python and you can use it in the same way as Python (Please copy "auxiliary" into "matlab_ver" before you use MATLAB-ver SolidBin).
-
-NOTICE: We only test this wrapper on MATLAB R2017a and we can not guarantee the stabibility on other versions of MATLAB.
-
 ## <a name="preprocessing"></a>Contacts and bug reports
 Please send bug reports or questions (such as the appropriate modes for your datasets) to
 Ziye Wang: zwang17@fudan.edu.cn and Dr. Shanfeng Zhu: zhusf@fudan.edu.cn
