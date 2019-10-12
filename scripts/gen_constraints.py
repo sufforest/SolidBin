@@ -22,14 +22,7 @@ def gen_coailgn_output(TAXAassign_file):
     namelist = pd.read_csv(TAXAassign_file, sep=',', header=None, usecols=range(1)).values[:, 0]
     taxaHeader = pd.read_csv(TAXAassign_file, sep=',', nrows=1)
     mapObj = dict(zip(namelist, range(len(namelist))))  #
-    taxaassignMat_ori = pd.read_csv(TAXAassign_file, sep=',', header=None, usecols=range(1, taxaHeader.shape[1])).values
-    taxaassignMat_ori = taxaassignMat_ori.tolist()
-    taxaassignMat = []
-    for i in range(len(taxaassignMat_ori)):
-        if taxaassignMat_ori[i][5] != '__Unclassified__':
-            taxaassignMat.append(taxaassignMat_ori[i])
-    taxaassignMat = np.array(taxaassignMat)
-    taxaassignMat = taxaassignMat.astype(object)
+    taxaassignMat = pd.read_csv(TAXAassign_file, sep=',', header=None, usecols=range(1, taxaHeader.shape[1])).values
     output_coalign_file = TAXAassign_file + '.coalign.csv'
     # label
     taxaassignMat_coalign = taxaassignMat.sum(1)
@@ -55,14 +48,8 @@ def gen_cannotlink_output(TAXAassign_file):
     taxaHeader = pd.read_csv(TAXAassign_file, sep=',', nrows=1)
     mapObj = dict(zip(namelist, range(len(namelist))))  #
 
-    taxaassignMat_ori = pd.read_csv(TAXAassign_file, sep=',', header=None, usecols=range(1, taxaHeader.shape[1])).values
-    taxaassignMat_ori = taxaassignMat_ori.tolist()
-    taxaassignMat = []
-    for i in range(len(taxaassignMat_ori)):
-        if taxaassignMat_ori[i][5] != '__Unclassified__':
-            taxaassignMat.append(taxaassignMat_ori[i])
-    taxaassignMat = np.array(taxaassignMat)
-    taxaassignMat=taxaassignMat.astype(object)
+    taxaassignMat = pd.read_csv(TAXAassign_file, sep=',', header=None, usecols=range(1, taxaHeader.shape[1])).values
+
     taxaassignMat_genus = taxaassignMat[:, 4]
 
     taxa_label_genus = np.unique(taxaassignMat_genus)
@@ -90,5 +77,4 @@ if __name__ == '__main__':
     gen_cannotlink_output(args.TAXAassign_file)
     print("Generate cannot link file:\t Done!")
     print("Finished!")
-
 
