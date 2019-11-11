@@ -499,12 +499,12 @@ def gen_bestk(contig_file, X_mat,bestK=0):#改成无论是否固定k都要跑生
 
             if os.path.exists(seedURL):
                 candK = file_len(seedURL)
-                maxK = 2 * candK
+                maxK = min(2 * candK,length(X_mat))
                 stepK = 2
             else:
                 logger.info("seed not exist, k start from 2 " )
                 candK = 2
-                maxK = 20
+                maxK = min(20,length(X_mat))
                 stepK = 2
         else:
             logger.info("Hmmsearch failed! Not exist: " + hmmResultURL)
@@ -515,38 +515,43 @@ def gen_bestk(contig_file, X_mat,bestK=0):#改成无论是否固定k都要跑生
 
     if bestK == 0:
         bestK = candK
-        bestSilVal = 0
-        t = time.time()
-        for k in range(candK, maxK, stepK):
-            kmeans = KMeans(n_clusters=k, init='k-means++', random_state=9, n_jobs=-1)
-            kmeans.fit(X_mat)
-            silVal = silhouette(X_mat, kmeans.cluster_centers_, kmeans.labels_)
-            logger.info("k:" + str(k) + "\tsilhouette:" + str(silVal) + "\telapsed time:" + str(time.time() - t))
+        if candK==maxK:
+            bestK = candK
+            bestSilVal = 0
+        else:
+            bestSilVal = 0
             t = time.time()
+            for k in range(candK, maxK, stepK):
+                kmeans = KMeans(n_clusters=k, init='k-means++', random_state=9, n_jobs=-1)
+                kmeans.fit(X_mat)
+                silVal = silhouette(X_mat, kmeans.cluster_centers_, kmeans.labels_)
+                logger.info("k:" + str(k) + "\tsilhouette:" + str(silVal) + "\telapsed time:" + str(time.time() - t))
+                t = time.time()
 
-            if silVal > bestSilVal:
-                bestSilVal = silVal
-                bestK = k
-            else:
-                break
+                if silVal > bestSilVal:
+                    bestSilVal = silVal
+                    bestK = k
+                else:
+                    break
 
         candK = bestK + 4
-        bestSilVal_2nd = 0
-        for k in range(candK, maxK, stepK):
-            kmeans = KMeans(n_clusters=k, init='k-means++', random_state=9, n_jobs=-1)
-            kmeans.fit(X_mat)
-            silVal_2nd = silhouette(X_mat, kmeans.cluster_centers_, kmeans.labels_)
-            logger.info("k:" + str(k) + "\tsilhouette:" + str(silVal_2nd) + "\telapsed time:" + str(time.time() - t))
-            t = time.time()
-            if silVal_2nd > bestSilVal_2nd:
-                bestSilVal_2nd = silVal_2nd
-                bestK = k
+        if maxK > candK:
+            bestSilVal_2nd = 0
+            for k in range(candK, maxK, stepK):
+                kmeans = KMeans(n_clusters=k, init='k-means++', random_state=9, n_jobs=-1)
+                kmeans.fit(X_mat)
+                silVal_2nd = silhouette(X_mat, kmeans.cluster_centers_, kmeans.labels_)
+                logger.info("k:" + str(k) + "\tsilhouette:" + str(silVal_2nd) + "\telapsed time:" + str(time.time() - t))
+                t = time.time()
+                if silVal_2nd > bestSilVal_2nd:
+                    bestSilVal_2nd = silVal_2nd
+                    bestK = k
+                else:
+                    break
+            if bestSilVal_2nd > bestSilVal:
+                bestSilVal = bestSilVal_2nd
             else:
-                break
-        if bestSilVal_2nd > bestSilVal:
-            bestSilVal = bestSilVal_2nd
-        else:
-            bestK = candK - 4
+                bestK = candK - 4
         logger.info("bestk:" + str(bestK) + "\tsilVal:" + str(bestSilVal))
 
     else:
