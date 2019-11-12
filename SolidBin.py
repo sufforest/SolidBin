@@ -499,12 +499,12 @@ def gen_bestk(contig_file, X_mat,bestK=0):#改成无论是否固定k都要跑生
 
             if os.path.exists(seedURL):
                 candK = file_len(seedURL)
-                maxK = min(2 * candK,length(X_mat))
+                maxK = min(2 * candK,len(X_mat))
                 stepK = 2
             else:
                 logger.info("seed not exist, k start from 2 " )
                 candK = 2
-                maxK = min(20,length(X_mat))
+                maxK = min(20,len(X_mat))
                 stepK = 2
         else:
             logger.info("Hmmsearch failed! Not exist: " + hmmResultURL)
