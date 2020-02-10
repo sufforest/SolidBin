@@ -138,7 +138,7 @@ def get_seed(contig_file, hard=0):
         if os.path.exists(hmmResultURL):
             if not (os.path.exists(seedURL)):
                 markerCmd = markerExeURL+" "+hmmResultURL+" " + \
-                    contig_file+" 1000 "+seedURL+" "+str(hard)
+                    contig_file+" 1001 "+seedURL+" "+str(hard)
                 print("exec cmd: "+markerCmd)
                 os.system(markerCmd)
 
