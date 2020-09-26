@@ -27,6 +27,12 @@ cd ~path_to_checkM
 python setup.py install
 ```
 
+CheckM relies on a number of precalculated data files which can be downloaded from https://data.ace.uq.edu.au/public/CheckM_databases/. Decompress the file to an appropriate folder and run the following to inform CheckM of where the files have been placed (More details are available at https://github.com/Ecogenomics/CheckM/wiki/Installation#how-to-install-checkm):
+
+```sh
+checkm data setRoot <checkm_data_dir>
+```
+
 You can run these commands to make the files executable
 ```sh
 chmod +x ~path_to_SolidBin/auxiliary/test_getmarker.pl
