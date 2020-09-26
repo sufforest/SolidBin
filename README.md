@@ -15,6 +15,7 @@ git clone https://github.com/sufforest/SolidBin
 Then simply create a solidbin environment 
 
 ```sh
+cd SolidBin
 conda env create -f environment.yml
 source activate solidbin
 ```
