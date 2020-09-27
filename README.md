@@ -28,6 +28,7 @@ source activate solidbin
 cd ~path_to_checkM
 python setup.py install
 ```
+Install checkM database
 
 CheckM relies on a number of precalculated data files which can be downloaded from https://data.ace.uq.edu.au/public/CheckM_databases/. 
 
