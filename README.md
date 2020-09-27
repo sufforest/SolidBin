@@ -36,7 +36,11 @@ CheckM relies on a number of precalculated data files which can be downloaded fr
 Then, decompress the file to an appropriate folder and run the following to inform CheckM of where the files have been placed (More details are available at https://github.com/Ecogenomics/CheckM/wiki/Installation#how-to-install-checkm):
 
 ```sh
-checkm data setRoot <checkm_data_dir>
+mkdir <checkm_data_dir>
+cd <checkm_data_dir>
+wget https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz
+tar xzf checkm_data_2015_01_16.tar.gz 
+checkm data setRoot .
 ```
 
 You can run these commands to make the files executable
