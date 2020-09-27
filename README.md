@@ -26,7 +26,7 @@ source activate solidbin
 (please make sure you have installed openssl)
 
 ```sh
-cd ~path_to_checkM
+cd CheckM-1.0.18
 python setup.py install
 ```
 Install checkM database:
