@@ -7,7 +7,7 @@ A genome binning method for contig binning, based on semi-supervised spectral cl
 
 We recommend using conda to run SolidBin. Download [here](https://www.continuum.io/downloads)
 
-### <a name="docker"></a>Obtain SolidBin and create an environment for SolidBin
+### <a name="docker"></a>Obtain SolidBin and create an environment
 After installing Anaconda (or miniconda), fisrt obtain SolidBin:
 
 ```sh
