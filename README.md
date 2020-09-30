@@ -57,10 +57,21 @@ chmod +x ~path_to_SolidBin/auxiliary/auxiliary/FragGeneScan1.19/FGS_gff.py
 
 The preprocessing steps aim to generate coverage profile and composition profile as input to our program.
 
-There are several methods that can generate these two types of information and we provide one of them below.
+There are several binning methods that can generate these two types of information (such as CONCOCT and MetaWRAP) and we provide one method to generate the input files as follows.
 ### Coverage Profile
+The users need to modify gen_cov.sh according to the data path and run it.
 
-```conda activate solidbin
+For conda environment, you should check whether perl is installed. or install it using 
+```sh
+conda activate solidbin
+conda install perl
+```
+
+```sh
+conda activate solidbin
+conda install click
+cd SolidBin
+bash scripts/gen_cov.sh
 ```
 
 ### Composition Profile
@@ -72,26 +83,8 @@ $ python scripts/gen_kmer.py /path/to/data/contig.fasta 1000 4
 ```
 Here we choose k=4. By default we usually keep contigs longer than 1000, you can specify a different number. The kmer_file will be generated in the /path/to/data
 
-### Coverage Profile
-For the coverage profile we use minimap, since it can address both short read and long read samples.
 
-If you use SolidBin in docker, all dependencies and environment variables have been configured correctly, you can just mount you input directory into /input in docker, then slightly modify gen_cov.sh and run it.
 
-You input directory should look like this:
-
-```
-.
-+-- assembly.fasta
-+-- sr
-|   +-- short_read_sample_1
-|   +-- short_read_sample_2
-+-- pb
-|   +-- pacbio_sample_1
-|   +-- pacbio_sample_2
-|   +-- pacbio_sample_3
-```
-
-For conda environment , you should check whether perl is installed.
 
 ### Coalignment file
 To generate must-link constraints and cannot-link constraints, you can use TAXAassign [here](https://github.com/umerijaz/taxaassign) to obtain the assignments of some contigs, and then run like this:
