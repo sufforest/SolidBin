@@ -817,3 +817,4 @@ if __name__ == '__main__':
     logger.removeHandler(console_hdr)
 
     postprocess_with_checkm(args.output)
+    logger.info("Binning Finished")
