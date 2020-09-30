@@ -61,29 +61,27 @@ There are several binning methods that can generate these two types of informati
 ### Coverage Profile
 The users need to modify gen_cov.sh according to the data path and run it.
 
-For conda environment, you should check whether perl is installed. or install it using 
+For conda environment, you should check whether perl is installed. or install it using conda. 
 ```sh
 conda activate solidbin
 conda install perl
 ```
 
 ```sh
-conda activate solidbin
+(conda activate solidbin)
 conda install click
 cd SolidBin
-bash scripts/gen_cov.sh
+$ bash scripts/gen_cov.sh
 ```
 
 ### Composition Profile
 
-Composition profile is the vector representation of contigs and we use kmer to generate this information.
+Composition profile is the vector representation of contigs and we use kmer (k=4 in the example) to generate this information. Users can keep the contigs longer than contig_length_threshold, such as 1000, for binning as follows.
 
 ```
-$ python scripts/gen_kmer.py /path/to/data/contig.fasta 1000 4 
+$ bash scripts/run.sh test_data/input/final.contigs.fa 1000 4 
 ```
-Here we choose k=4. By default we usually keep contigs longer than 1000, you can specify a different number. The kmer_file will be generated in the /path/to/data
-
-
+Here we choose k=4. By default we usually keep contigs longer than 1000, you can specify a different number. The kmer_file will be generated in the /path/to/contig_file
 
 
 ### Coalignment file
