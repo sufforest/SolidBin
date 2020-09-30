@@ -58,7 +58,10 @@ chmod +x ~path_to_SolidBin/auxiliary/auxiliary/FragGeneScan1.19/FGS_gff.py
 The preprocessing steps aim to generate coverage profile and composition profile as input to our program.
 
 There are several methods that can generate these two types of information and we provide one of them below.
+### Coverage Profile
 
+```conda activate solidbin
+```
 
 ### Composition Profile
 
