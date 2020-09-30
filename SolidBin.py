@@ -457,7 +457,7 @@ def recluster_hh_bins(high_com_p_high_cont_path,mapObj,X_t,length_weight,namelis
                 name_map = dict(zip(hh_contigs_id, range(len(hh_contigs_id))))
                 seed_idx = [name_map[seed_name] for seed_name in seed_list]
                 seed_center = X_t_hh_unclustered[seed_idx]
-                km = KMeans(n_clusters=len(seed_idx), init=seed_center, n_jobs=-1, random_state=7)
+                km = KMeans(n_clusters=len(seed_idx), init=seed_center, n_jobs=-1, random_state=7,n_init=1)
             else:
                 km = KMeans(n_clusters=bin_number, n_jobs=-1,n_init=30, random_state=7)
 
@@ -672,7 +672,7 @@ def recluster_other_contigs(not_clustered_path,X_t,namelist,mapObj,length_weight
         name_map = dict(zip(unclassified_contigs_id, range(len(unclassified_contigs_id))))
         seed_idx = [name_map[seed_name] for seed_name in seed_list]
         seed_center = X_t_unclustered[seed_idx]
-        km = KMeans(n_clusters=len(seed_idx), init=seed_center, n_jobs=-1,random_state=7)
+        km = KMeans(n_clusters=len(seed_idx), init=seed_center, n_jobs=-1,random_state=7,n_init=1)
     else:
         km = KMeans(n_clusters=bin_number, n_jobs=-1,n_init=30, random_state=7)
 
@@ -817,3 +817,4 @@ if __name__ == '__main__':
     logger.removeHandler(console_hdr)
 
     postprocess_with_checkm(args.output)
+    logger.info("Binning Finished")
