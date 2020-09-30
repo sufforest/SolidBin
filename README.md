@@ -43,6 +43,8 @@ tar xzf checkm_data_2015_01_16.tar.gz
 checkm data setRoot .
 ```
 
+### <a name="docker"></a>Add dependencies
+
 You can run these commands to make the files executable
 ```sh
 chmod +x ~path_to_SolidBin/auxiliary/test_getmarker.pl
