@@ -812,9 +812,11 @@ if __name__ == '__main__':
             logger.info("beta:\t"+str(b))
             save_result(res, args.output, namelist)
 
+    postprocess_with_checkm(args.output)
+
+    logger.info("Binning Finished")
+
     if args.log:
         logger.removeHandler(handler)
     logger.removeHandler(console_hdr)
 
-    postprocess_with_checkm(args.output)
-    logger.info("Binning Finished")
