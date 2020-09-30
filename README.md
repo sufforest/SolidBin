@@ -31,9 +31,7 @@ python setup.py install
 ```
 Install checkM database:
 
-CheckM relies on a number of precalculated data files which can be downloaded from https://data.ace.uq.edu.au/public/CheckM_databases/. 
-
-Then, decompress the file to an appropriate folder and run the following to inform CheckM of where the files have been placed (More details are available at https://github.com/Ecogenomics/CheckM/wiki/Installation#how-to-install-checkm):
+CheckM relies on a number of precalculated data files which can be downloaded from https://data.ace.uq.edu.au/public/CheckM_databases/. (More details are available at https://github.com/Ecogenomics/CheckM/wiki/Installation#how-to-install-checkm):
 
 ```sh
 mkdir <checkm_data_dir>
@@ -138,6 +136,7 @@ docker run -it -v /data/StrainMock/input:/input -v /data/StrainMock/output:/outp
 ```sh
 python SolidBin.py --contig_file test_data/input/final.contigs_1000.fa --coverage_profiles test_data/input/coverage_f1000.tsv --composition_profiles test_data/input/kmer_4_f1000.csv --output test_data/output/result.tsv --log test_data/output/log.txt
 ```
+"result.tsv" is the original binning result. "result.tsv.with_postprocess.tsv" is the binning result using checkM to improve the binning performance.
 > - arguments
 
   	--contig_file CONTIG_FILE: 
