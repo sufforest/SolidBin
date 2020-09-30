@@ -131,6 +131,11 @@ docker run -it -v /data/StrainMock/input:/input -v /data/StrainMock/output:/outp
                    [-b BETA]
                    [--use_sfs]
 
+### Usage example (SolidBin-naive) :
+
+```sh
+python SolidBin.py --contig_file test_data/input/final.contigs_1000.fa --coverage_profiles test_data/input/coverage_f1000.tsv --composition_profiles test_data/input/kmer_4_f1000.csv --output test_data/output/result.tsv --log test_data/output/log.txt
+```
 > - arguments
 
   	--contig_file CONTIG_FILE: 
