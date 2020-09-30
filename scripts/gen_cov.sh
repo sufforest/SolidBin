@@ -48,7 +48,7 @@ do
 done
 
 
-${scripts_code_dir}/Collate.pl $mapdir > ${input_dir}/coverage.csv
+perl ${scripts_code_dir}/Collate.pl $mapdir > ${input_dir}/coverage.csv
 
 perl -pe "s/,/\t/g;" ${input_dir}/coverage.csv > ${input_dir}/coverage.tsv
 
