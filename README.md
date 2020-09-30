@@ -49,6 +49,7 @@ chmod +x ~path_to_SolidBin/auxiliary/test_getmarker.pl
 chmod +x ~path_to_SolidBin/auxiliary/FragGeneScan1.19/run_FragGeneScan.pl
 chmod +x ~path_to_SolidBin/auxiliary/hmmer-3.1b1/bin/hmmsearch
 chmod +x ~path_to_SolidBin/auxiliary/auxiliary/FragGeneScan1.19/FragGeneScan
+chmod +x ~path_to_SolidBin/auxiliary/auxiliary/FragGeneScan1.19/FGS_gff.py
 ```
 
 
