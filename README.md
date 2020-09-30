@@ -43,6 +43,8 @@ tar xzf checkm_data_2015_01_16.tar.gz
 checkm data setRoot .
 ```
 
+### <a name="docker"></a>Add dependencies
+
 You can run these commands to make the files executable
 ```sh
 chmod +x ~path_to_SolidBin/auxiliary/test_getmarker.pl
@@ -71,7 +73,7 @@ conda install perl
 (conda activate solidbin)
 conda install click
 cd SolidBin
-$ bash scripts/gen_cov.sh
+bash scripts/gen_cov.sh
 ```
 
 ### Composition Profile
@@ -79,7 +81,7 @@ $ bash scripts/gen_cov.sh
 Composition profile is the vector representation of contigs and we use kmer (k=4 in the example) to generate this information. Users can keep the contigs longer than contig_length_threshold, such as 1000, for binning as follows:
 
 ```
-$ bash scripts/run.sh test_data/input/final.contigs.fa 1000 4 
+bash scripts/run.sh test_data/input/final.contigs.fa 1000 4 
 ```
 Here we choose k=4. By default we usually keep contigs longer than 1000, you can specify a different number. The kmer_file will be generated in the /path/to/contig_file. And the script will also keep the contigs longer than contig_length_threshold for the coverage_file.
 
