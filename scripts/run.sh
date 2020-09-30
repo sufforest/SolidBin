@@ -1,5 +1,5 @@
-#eg: ./run.sh <data_path>/input/strmgCAMI2_short_read_pooled_megahit_assembly.fasta 1000 4
-# ./run.sh fasta_file  contig_length_threshold kmer_number
+#eg: bash scripts/run.sh <data_path>/input/final.contigs.fa 1000 4
+#bash scripts/run.sh fasta_file contig_length_threshold kmer_number
 
 
 input_dir=$(dirname $1)
