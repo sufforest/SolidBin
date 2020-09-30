@@ -4,18 +4,15 @@
 # input_dir: the directory containts all data we need
 # assembly: fasta file consisting of contigs
 # mapdir: a temp directory to save sam/bam files
-# short_read_dir: contains short read samples if any
-# pb_read_dir: contains pacbio read samples if any
+# read_dir: contains read files such as :Reads.0.r1.fq.gz
 # scripts_code_dir: a directory to save scripts for generating input files 
 
-# for non-docker env, please install samtools,minimap,bedtools and add them into path
 
-input_dir="/mnt/data4/wzy/CAMI2019/Strain_Madness_Dataset/strmg_megahit_assembly/input"
-assembly="${input_dir}/strmgCAMI2_short_read_pooled_megahit_assembly.fasta"
-mapdir="${input_dir}/map"
-short_read_dir="/mnt/data4/wzy/CAMI2019/Strain_Madness_Dataset/strmg_gold_assembly/input/sr"
-pb_read_dir="/mnt/data4/wzy/CAMI2019/Strain_Madness_Dataset/strmg_gold_assembly/input/pb"
-scripts_code_dir="/mnt/data4/wzy/scripts"
+input_dir="test_data/input" #the dir to the input data
+assembly="${input_dir}/final.contigs.fa" #the file of the assembled contigs
+mapdir="${input_dir}/map"   # the path to save the alignment files
+read_dir="test_data/input/Reads" #the path where you put your reads in
+scripts_code_dir="scripts" #the path to our "scripts" files
 
 if [ ! -d $mapdir ]; then
 mkdir $mapdir
@@ -26,21 +23,14 @@ awk -v OFS='\t' {'print $1,$2'} ${assembly}.fai > ${input_dir}/length.txt;
 
 cnt=0;
 
-for file in ${short_read_dir}/*;
+for file in ${read_dir}/*;
 do echo $file;
 let cnt=cnt+1;
 echo $cnt;
-minimap2 -t 45 -ax sr $assembly $file > "${mapdir}/sr_${cnt}.sam";
-
+predix=`basename ${file}`
+minimap2 -t 30 -ax sr $assembly $file > ${mapdir}/${predix}.sam;
 done
 
-for file in ${pb_read_dir}/*;
-do echo $file;
-let cnt=cnt+1;
-echo $cnt;
-minimap2 -t 45 -ax map-pb $assembly $file > "${mapdir}/pb_${cnt}.sam";
-
-done
 
 for file in ${mapdir}/*.sam
 do
@@ -58,7 +48,7 @@ do
 done
 
 
-${scripts_code_dir}/Collate.pl $mapdir > ${input_dir}/coverage.tsv
+${scripts_code_dir}/Collate.pl $mapdir > ${input_dir}/coverage.csv
 
-perl -pe "s/,/\t/g;" ${input_dir}/coverage.tsv > ${input_dir}/coverage_new.tsv
+perl -pe "s/,/\t/g;" ${input_dir}/coverage.csv > ${input_dir}/coverage.tsv
 
