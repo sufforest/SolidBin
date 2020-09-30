@@ -76,12 +76,12 @@ $ bash scripts/gen_cov.sh
 
 ### Composition Profile
 
-Composition profile is the vector representation of contigs and we use kmer (k=4 in the example) to generate this information. Users can keep the contigs longer than contig_length_threshold, such as 1000, for binning as follows.
+Composition profile is the vector representation of contigs and we use kmer (k=4 in the example) to generate this information. Users can keep the contigs longer than contig_length_threshold, such as 1000, for binning as follows:
 
 ```
 $ bash scripts/run.sh test_data/input/final.contigs.fa 1000 4 
 ```
-Here we choose k=4. By default we usually keep contigs longer than 1000, you can specify a different number. The kmer_file will be generated in the /path/to/contig_file
+Here we choose k=4. By default we usually keep contigs longer than 1000, you can specify a different number. The kmer_file will be generated in the /path/to/contig_file. And the script will also keep the contigs longer than contig_length_threshold for the coverage_file.
 
 
 ### Coalignment file
@@ -131,6 +131,11 @@ docker run -it -v /data/StrainMock/input:/input -v /data/StrainMock/output:/outp
                    [-b BETA]
                    [--use_sfs]
 
+### Usage example (SolidBin-naive) :
+
+```sh
+python SolidBin.py --contig_file test_data/input/final.contigs_1000.fa --coverage_profiles test_data/input/coverage_f1000.tsv --composition_profiles test_data/input/kmer_4_f1000.csv --output test_data/output/result.tsv --log test_data/output/log.txt
+```
 > - arguments
 
   	--contig_file CONTIG_FILE: 
