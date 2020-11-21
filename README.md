@@ -59,7 +59,7 @@ The preprocessing steps aim to generate coverage profile and composition profile
 
 There are several binning methods that can generate these two types of information (such as CONCOCT and MetaWRAP) and we provide one method to generate the input files as follows.
 ### Coverage Profile
-The users need to modify gen_cov.sh according to the data path and run it.
+The users need to modify gen_cov.sh according to the data path and run it. The separator in the coverage file should be tab characters.
 
 For conda environment, you should check whether perl is installed. or install it using conda. 
 ```sh
